@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>e-Motion Log In Page</title>
+        <link rel="stylesheet" type="text/css" href="./style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <style>
+          body {
+    background-image: url("emotion.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+ 
+#login_frame {
+    width: 400px;
+    height: 260px;
+    padding: 13px;
+ 
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -200px;
+    margin-top: -200px;
+ 
+    background-color:#FA9081;
+ 
+    border-radius: 10px;
+    text-align: center;
+}
+ 
+form p > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+ 
+ 
+.label_input {
+    font-size: 14px;
+ 
+    width: 120px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+ 
+    color: white;
+    background-color:#EE4646;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+ 
+.text_field {
+    width: 278px;
+    height: 28px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 0;
+}
+#Submit {
+    font-size: 14px;
+ 
+    width: 120px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+ 
+    color: white;
+    background-color:#EE4646;
+    border-radius: 6px;
+    border: 0;
+ 
+    float: left;
+}
+
+#Login {
+    font-size: 14px;
+ 
+    width: 120px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+ 
+    color: white;
+    background-color: #EE4646;
+    border-radius: 6px;
+    border: 0;
+ 
+    float: left;
+}
+
+#Reset {
+    font-size: 14px;
+ 
+    width: 120px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+ 
+    color: white;
+    background-color:#EE4646;
+    border-radius: 6px;
+    border: 0;
+ 
+    float: right;
+    top: 5px;
+ 
+}
+#Signup {
+    font-size: 14px;
+ 
+    width: 120px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+ 
+    color: white;
+    background-color: #EE4646;
+    border-radius: 6px;
+    border: 0;
+ 
+    float: right;
+    top: 5px;
+ 
+}
+
+#login_control {
+    padding: 0 28px;
+}
+      </style>  
+    </head>
+    <body>
+        <div id="login_frame">
+            <h2>Welcome to e-Motion!</h2>
+            <form method="post" action="/login">
+
+                <p><label class="label_input">Username</label><input type="text" id="username" name = username class="text_field"/></p>
+                <p><label class="label_input">Password</label><input type="password" id="password" name = password class="text_field"/></p>
+         
+                <div id="login_control">
+                    <input type="submit" value="Login" id = "Login" onclick = "checkLoginInfo()">
+                    <input type="submit" value="Signup" id = "Signup" onclick = "return openRegiWindow()">
+                
+                </div>
+            </form>
+        </div> 
+    <script>
+        
+        </script>
+
+    </body>
+</html>
+

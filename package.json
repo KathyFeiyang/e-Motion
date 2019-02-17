@@ -1,0 +1,25 @@
+{
+  "name": "nyu_hack",
+  "version": "1.0.0",
+  "description": "nyu hack - eMotion",
+  "main": "Login.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-layout": "^0.1.0",
+    "fs": "0.0.1-security",
+    "htmp": "0.0.1",
+    "http": "0.0.0",
+    "lsof": "^0.1.0",
+    "mysql": "^2.16.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  }
+}
