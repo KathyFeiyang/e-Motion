@@ -1,0 +1,174 @@
+<!--
+    Code references including:
+    https://docs.microsoft.com/en-us/azure/cognitive-services/face/quickstarts/javascript
+    https://stackoverflow.com/questions/7802744/adding-an-img-element-to-a-div-with-javascript
+    https://stackoverflow.com/questions/6734579/how-to-append-text-to-textarea
+    https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseText
+    https://www.w3schools.com/xml/dom_httprequest.asp
+    https://stackoverflow.com/questions/10369839/cant-return-xmlhttp-responsetext
+    https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Fetching_data
+    ...
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Detect Faces Sample</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+
+        function loadXMLDoc(parameterString, onComplete, onError) {
+            //alert('loadXMLDoc has been called.');
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange=function() {
+                if (xmlhttp.readyState==4) {
+                    if(xmlhttp.status==200) {
+                        //document.getElementById("xmlResults").innerHTML = xmlhttp.responseText;
+                        //alert('Got the response!');
+                        alert("Response: " + xmlhttp.responseText);
+                        onComplete(xmlhttp.responseText);
+                    } else {
+                        onError();
+                    }
+                }
+            };
+
+            xmlhttp.open('GET', 'http://localhost:8081', true);
+            xmlhttp.send();
+            alert('Request opened and sent');
+        }
+
+        $(function(){
+            //alert("got callback!");
+            //left out irrelevant code which creates the var "parameters"
+            loadXMLDoc(parameters, function(results) {
+                // this function will be called if the xmlhttprequest received a result
+                document.getElementById("xmlResults").innerHTML = results;
+            }, function() {
+                // this function will be called if xhr failed
+                document.getElementById("xmlResults").innerHTML = "No results.";
+            });
+        });
+
+        function processImage() {
+
+            loadXMLDoc();
+
+            // Replace <Subscription Key> with your valid subscription key.
+            var subscriptionKey = "f9b70af864154028a3f27983b2c82131";
+            
+            // NOTE: You must use the same region in your REST call as you used to
+            // obtain your subscription keys. For example, if you obtained your
+            // subscription keys from westus, replace "westcentralus" in the URL
+            // below with "westus".
+            //
+            // Free trial subscription keys are generated in the "westus" region.
+            // If you use a free trial subscription key, you shouldn't need to change 
+            // this region.
+            var uriBase =
+                "https://eastus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false";
+            
+            // Request parameters.
+            var params = {
+                "returnFaceId": "true",
+                "returnFaceLandmarks": "false",
+                "returnFaceAttributes":
+                    "age,gender,headPose,smile,facialHair,glasses,emotion," +
+                    "hair,makeup,occlusion,accessories,blur,exposure,noise"
+            };
+            
+            // Display the image.
+            //var sourceImageUrl = document.getElementById("inputImage").value;
+            var sourceImageUrlList = [
+                "https://news.northeastern.edu/wp-content/uploads/2019/01/Bryan-Williams_faces-750x0-c-default.jpg",
+                "https://news.northeastern.edu/wp-content/uploads/2019/01/Mariana-Golden_faces-750x0-c-default.jpg"
+            ];
+
+            //var emotionList = [];
+            var myTextArea = $('#responseTextArea');
+            myTextArea.val("Detected Emotions:");
+            
+            for (var iter = 0; iter < 2; iter++){
+                // Perform the REST API call.
+                document.querySelector("#sourceImage").src = sourceImageUrlList[iter];
+                $.ajax({
+                    url: uriBase + "?" + $.param(params),
+            
+                    // Request headers.
+                    beforeSend: function(xhrObj){
+                        xhrObj.setRequestHeader("Content-Type","application/json");
+                        xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+                    },
+            
+                    type: "POST",
+            
+                    // Request body.
+                    data: '{"url": ' + '"' + sourceImageUrlList[iter] + '"}',
+                })
+            
+                .done(function(data) {
+                    var emotionKeys = Object.keys(data[0]['faceAttributes']['emotion']);
+                    var emotionValues = Object.values(data[0]['faceAttributes']['emotion']);
+                    var emotionValuesCopy = emotionValues.slice();
+                    emotionValuesCopy.sort();
+                    var max = emotionValuesCopy[emotionValuesCopy.length - 1]
+                    var maxIndex = emotionValues.indexOf(max);
+                    var foundEmotion = emotionKeys[maxIndex]; // foundEmotion is the emotion String corresponding to the largest confidence
+                    //emotionList.push(foundEmotion);
+
+                    myTextArea.val(myTextArea.val() + '\n' + foundEmotion);
+                })
+            
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    // Display error message.
+                    var errorString = (errorThrown === "") ?
+                        "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+                    errorString += (jqXHR.responseText === "") ?
+                        "" : (jQuery.parseJSON(jqXHR.responseText).message) ?
+                            jQuery.parseJSON(jqXHR.responseText).message :
+                                jQuery.parseJSON(jqXHR.responseText).error.message;
+                    alert(errorString);
+                });
+            }
+            // Show formatted JSON on webpage.
+            //$("#responseTextArea").val((JSON.stringify(data, null, 4)));
+            //$("#responseTextArea").val(emotionList[0]);
+
+            sourceImageUrlList.forEach(element => {
+                var elem = document.createElement("img");
+                elem.src = element;
+                elem.setAttribute("width", "200");
+                document.getElementById("imageDiv").appendChild(elem);
+            });
+        };
+    </script>
+
+    <h1>Detect Faces:</h1>
+    Enter the URL to an image that includes a face or faces, then click
+    the <strong>Analyze face</strong> button.<br><br>
+    Image to analyze: <input type="text" name="inputImage" id="inputImage"
+        value="https://upload.wikimedia.org/wikipedia/commons/c/c3/RH_Louise_Lillian_Gish.jpg" />
+    
+    <button onclick="processImage()">Analyze face</button><br><br>
+    <div id="wrapper" style="width:1020px; display:table;">
+        <div id="jsonOutput" style="width:600px; display:table-cell;">
+            Response:<br><br>
+            <textarea id="responseTextArea" class="UIInput"
+                style="width:580px; height:400px;">
+            </textarea>
+        </div>
+        
+        <div id="imageDiv" style="width:600px; display:table-cell;">
+            Source image:<br><br>
+            <img id="sourceImage" width="0" />
+        </div>
+       
+    </div>
+
+    </body>
+</html>
